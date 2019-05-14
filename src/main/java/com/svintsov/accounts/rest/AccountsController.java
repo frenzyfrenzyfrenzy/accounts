@@ -20,7 +20,7 @@ public class AccountsController {
 
     @ResponseBody
     @RequestMapping(path = "/transfer", method = RequestMethod.POST)
-    public TransferResponse translate(@RequestBody TransferRequest transferRequest) {
+    public TransferResponse transfer(@RequestBody TransferRequest transferRequest) {
         TransferResponse transferResponse = new TransferResponse();
         List<String> validationErrors = validator.validateTransferRequest(transferRequest);
         if (validationErrors != null && !validationErrors.isEmpty()) {
@@ -45,7 +45,7 @@ public class AccountsController {
     }
 
     @ResponseBody
-    @ExceptionHandler(HttpMessageNotReadableException.class)
+    @ExceptionHandler(RuntimeException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public TransferResponse handleRuntimeException(RuntimeException exception) {
         TransferResponse transferResponse = new TransferResponse();
