@@ -1,0 +1,9 @@
+accounts:
+  requestSchemaPath: "/schema/transferRequest.json"
+  responseSchemaPath: "/schema/transferResponse.json"
+
+spring:
+  jackson:
+    deserialization:
+      FAIL_ON_UNKNOWN_PROPERTIES: true
+

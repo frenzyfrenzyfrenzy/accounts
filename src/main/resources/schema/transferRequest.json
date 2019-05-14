@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "http://svintsov.com/accounts/transferRequest.json",
+  "title": "Transfer Request",
+  "description": "A Transfer Request",
+  "type": "object",
+  "properties": {
+    "from": {
+      "type": "string"
+    },
+    "to": {
+      "type": "string"
+    },
+    "amount": {
+      "type": "number"
+    }
+  },
+  "required": [
+    "from",
+    "to",
+    "amount"
+  ]
+}
