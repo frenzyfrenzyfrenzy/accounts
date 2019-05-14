@@ -14,8 +14,7 @@ spring:
     hikari:
           connection-init-sql:
   jpa:
-    hibernate:
-      ddl-auto: create-drop
+    generate-ddl: true
 
 
 
