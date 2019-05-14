@@ -2,6 +2,8 @@ package com.svintsov.accounts;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.svintsov.accounts.service.AccountsRepository;
+import com.svintsov.accounts.service.TransferService;
 import com.svintsov.accounts.validator.Validator;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -21,6 +23,11 @@ public class App implements WebMvcConfigurer {
     @Bean
     Validator validator(AccountsProperties accountsProperties) {
         return new Validator(accountsProperties);
+    }
+
+    @Bean
+    TransferService transferService(AccountsRepository accountsRepository) {
+        return new TransferService(accountsRepository);
     }
 
     @Bean

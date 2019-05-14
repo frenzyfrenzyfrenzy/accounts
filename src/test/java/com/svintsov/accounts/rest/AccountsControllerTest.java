@@ -62,4 +62,14 @@ public class AccountsControllerTest {
         Assert.assertEquals(transferResponse.body().getSuccess(), true);
     }
 
+    @Test
+    public void shouldFailOnValidation() throws IOException {
+        TransferRequest transferRequest = new TransferRequest();
+        transferRequest.setFrom("1");
+        transferRequest.setTo("2");
+        Response<TransferResponse> transferResponse = accountsApi.transfer(transferRequest).execute();
+        Assert.assertEquals(transferResponse.body().getSuccess(), false);
+        Assert.assertTrue(!transferResponse.body().getErrorText().isEmpty());
+    }
+
 }

@@ -2,6 +2,7 @@ package com.svintsov.accounts.rest;
 
 import com.svintsov.accounts.model.TransferRequest;
 import com.svintsov.accounts.model.TransferResponse;
+import com.svintsov.accounts.service.TransferService;
 import com.svintsov.accounts.utils.JsonUtils;
 import com.svintsov.accounts.validator.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,9 @@ public class AccountsController {
     @Autowired
     Validator validator;
 
+    @Autowired
+    TransferService transferService;
+
     @ResponseBody
     @RequestMapping(path = "/transfer", method = RequestMethod.POST)
     public TransferResponse transfer(@RequestBody TransferRequest transferRequest) {
@@ -29,6 +33,7 @@ public class AccountsController {
             return transferResponse;
         }
         else {
+            transferService.printAllAccounts();
             transferResponse.setSuccess(true);
             return transferResponse;
         }
