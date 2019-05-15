@@ -5,12 +5,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.svintsov.accounts.service.AccountsRepository;
 import com.svintsov.accounts.service.TransferService;
 import com.svintsov.accounts.validator.Validator;
+import org.h2.tools.Server;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.sql.SQLException;
 
 @SpringBootApplication
 @EnableConfigurationProperties(AccountsProperties.class)
@@ -37,5 +40,11 @@ public class App implements WebMvcConfigurer {
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
         jsonConverter.setObjectMapper(objectMapper);
         return jsonConverter;
+    }
+
+    @Bean(initMethod = "start", destroyMethod = "stop")
+    public Server inMemoryH2DatabaseaServer() throws SQLException {
+        return Server.createTcpServer(
+                "-tcp", "-tcpAllowOthers", "-tcpPort", "9092");
     }
 }
