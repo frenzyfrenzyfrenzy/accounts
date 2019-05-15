@@ -1,20 +1,14 @@
 package com.svintsov.accounts.model;
 
-import org.hibernate.annotations.GenericGenerator;
-
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "accounts")
 public class Account {
 
     @Id
-    @GeneratedValue(generator = "uuid")
-    @GenericGenerator(name = "uuid", strategy = "uuid2")
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
     private String name;
 
@@ -23,17 +17,17 @@ public class Account {
     public Account() {
     }
 
-    public Account(String id, String name, Double sum) {
+    public Account(Integer id, String name, Double sum) {
         this.id = id;
         this.name = name;
         this.sum = sum;
     }
 
-    public String getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

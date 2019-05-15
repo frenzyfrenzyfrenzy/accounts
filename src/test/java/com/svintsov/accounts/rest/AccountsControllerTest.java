@@ -55,8 +55,8 @@ public class AccountsControllerTest {
     @Test
     public void shouldTransfer() throws IOException {
         TransferRequest transferRequest = new TransferRequest();
-        transferRequest.setFrom("1");
-        transferRequest.setTo("2");
+        transferRequest.setFrom(1);
+        transferRequest.setTo(2);
         transferRequest.setAmount(250.);
         Response<TransferResponse> transferResponse = accountsApi.transfer(transferRequest).execute();
         Assert.assertEquals(transferResponse.body().getSuccess(), true);
@@ -65,8 +65,8 @@ public class AccountsControllerTest {
     @Test
     public void shouldFailOnValidation() throws IOException {
         TransferRequest transferRequest = new TransferRequest();
-        transferRequest.setFrom("1");
-        transferRequest.setTo("2");
+        transferRequest.setFrom(1);
+        transferRequest.setTo(2);
         Response<TransferResponse> transferResponse = accountsApi.transfer(transferRequest).execute();
         Assert.assertEquals(transferResponse.body().getSuccess(), false);
         Assert.assertTrue(!transferResponse.body().getErrorText().isEmpty());

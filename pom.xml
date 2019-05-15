@@ -34,6 +34,7 @@
                     <targetPackage>${model-package}</targetPackage>
                     <includeJsr303Annotations>true</includeJsr303Annotations>
                     <includeAdditionalProperties>false</includeAdditionalProperties>
+                    <useDoubleNumbers>true</useDoubleNumbers>
                 </configuration>
                 <executions>
                     <execution>
@@ -83,6 +84,14 @@
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
         </dependency>
+
+        <!--UTIL-->
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>27.1-jre</version>
+        </dependency>
+
 
         <!--TEST-->
         <dependency>
