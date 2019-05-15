@@ -1,8 +1,10 @@
 package com.svintsov.accounts.rest;
 
+import com.google.common.util.concurrent.AtomicDouble;
 import com.svintsov.accounts.App;
+import com.svintsov.accounts.model.Account;
 import com.svintsov.accounts.model.TransferRequest;
-import com.svintsov.accounts.model.TransferResponse;
+import com.svintsov.accounts.utils.JsonUtils;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import org.junit.Assert;
@@ -15,11 +17,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Random;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(
@@ -34,9 +40,13 @@ public class AccountsControllerTest {
     String localServerPort;
 
     private AccountsApi accountsApi;
+    private ExecutorService executorService;
+    private static final Random RANDOM = new Random(System.currentTimeMillis());
 
     @Before
     public void beforeTest() {
+        executorService = Executors.newFixedThreadPool(4);
+
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
@@ -53,23 +63,53 @@ public class AccountsControllerTest {
     }
 
     @Test
-    public void shouldTransfer() throws IOException {
-        TransferRequest transferRequest = new TransferRequest();
-        transferRequest.setFrom(1);
-        transferRequest.setTo(2);
-        transferRequest.setAmount(250.);
-        Response<TransferResponse> transferResponse = accountsApi.transfer(transferRequest).execute();
-        Assert.assertEquals(transferResponse.body().getSuccess(), true);
+    public void shouldTransferMoney() throws IOException, InterruptedException {
+        AtomicDouble sumBefore = new AtomicDouble(0.);
+        AtomicDouble sumAfter = new AtomicDouble(0.);
+
+        accountsApi.addAccount(TestUtils.createRandomAccount(1000)).execute();
+        accountsApi.addAccount(TestUtils.createRandomAccount(1000)).execute();
+        accountsApi.addAccount(TestUtils.createRandomAccount(1000)).execute();
+        accountsApi.addAccount(TestUtils.createRandomAccount(1000)).execute();
+        accountsApi.addAccount(TestUtils.createRandomAccount(1000)).execute();
+
+        final List<Account> accountsBefore = accountsApi.getAllAccounts().execute().body().getBody();
+        accountsBefore.forEach(it -> sumBefore.set(sumBefore.doubleValue() + it.getSum()));
+        LOGGER.info("ACCOUNTS BEFORE: {}", JsonUtils.silentToJsonString(accountsBefore));
+        LOGGER.info("SUM BEFORE: {}", sumBefore.get());
+
+        for (int i = 0; i < 10; ++i) {
+//            executorService.submit(() -> {
+                TransferRequest transferRequest = new TransferRequest();
+                transferRequest.setFrom(accountsBefore.get(RANDOM.nextInt(accountsBefore.size())).getId());
+                transferRequest.setTo(accountsBefore.get(RANDOM.nextInt(accountsBefore.size())).getId());
+                transferRequest.setAmount(RANDOM.nextDouble() * 1000);
+                try {
+                    accountsApi.transferMoney(transferRequest).execute();
+                } catch (IOException e) {
+                    LOGGER.error("FAILED TO TRANSFER", e);
+                }
+//            });
+        }
+
+//        executorService.awaitTermination(20, TimeUnit.SECONDS);
+
+        final List<Account> accountsAfter = accountsApi.getAllAccounts().execute().body().getBody();
+        accountsAfter.forEach(it -> sumAfter.set(sumAfter.doubleValue() + it.getSum()));
+        LOGGER.info("ACCOUNTS AFTER: {}", JsonUtils.silentToJsonString(accountsAfter));
+        LOGGER.info("SUM AFTER: {}", sumAfter.get());
+
+        Assert.assertEquals(sumBefore.get(), sumAfter.get(), 1.);
     }
 
-    @Test
-    public void shouldFailOnValidation() throws IOException {
-        TransferRequest transferRequest = new TransferRequest();
-        transferRequest.setFrom(1);
-        transferRequest.setTo(2);
-        Response<TransferResponse> transferResponse = accountsApi.transfer(transferRequest).execute();
-        Assert.assertEquals(transferResponse.body().getSuccess(), false);
-        Assert.assertTrue(!transferResponse.body().getErrorText().isEmpty());
-    }
+//    @Test
+//    public void shouldFailOnValidation() throws IOException {
+//        TransferRequest transferRequest = new TransferRequest();
+//        transferRequest.setFrom(1);
+//        transferRequest.setTo(2);
+//        Response<GeneralResponse> transferResponse = accountsApi.transferMoney(transferRequest).execute();
+//        Assert.assertEquals(transferResponse.body().getSuccess(), false);
+//        Assert.assertTrue(!transferResponse.body().getErrorText().isEmpty());
+//    }
 
 }
