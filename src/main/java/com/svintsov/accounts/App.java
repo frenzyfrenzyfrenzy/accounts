@@ -1,7 +1,9 @@
 package com.svintsov.accounts;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.svintsov.accounts.service.AccountsRepository;
 import com.svintsov.accounts.service.TransferService;
 import com.svintsov.accounts.validator.Validator;
@@ -38,6 +40,7 @@ public class App implements WebMvcConfigurer {
         MappingJackson2HttpMessageConverter jsonConverter = new MappingJackson2HttpMessageConverter();
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
+        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         jsonConverter.setObjectMapper(objectMapper);
         return jsonConverter;
     }

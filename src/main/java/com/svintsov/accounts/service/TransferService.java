@@ -1,14 +1,11 @@
 package com.svintsov.accounts.service;
 
 import com.svintsov.accounts.model.Account;
-import com.svintsov.accounts.model.TransferRequest;
-import com.svintsov.accounts.model.TransferResponse;
-import com.svintsov.accounts.utils.JsonUtils;
+import com.svintsov.accounts.utils.DatabaseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 public class TransferService {
 
@@ -20,15 +17,16 @@ public class TransferService {
         this.accountsRepository = accountsRepository;
     }
 
-    public void printAllAccounts() {
-        List<Account> accountsList = new ArrayList<>();
-        Iterable<Account> accountsIterable = accountsRepository.findAll();
-        accountsIterable.forEach(accountsList::add);
+    @Transactional(isolation = Isolation.READ_COMMITTED)
+    public void transferMoney(Integer from, Integer to, Double amount) {
+        Account fromAccount = accountsRepository.findById(from).orElseThrow(() -> new DatabaseException(String.format("Error getting account by id %s", from)));
+        Account toAccount = accountsRepository.findById(to).orElseThrow(() -> new DatabaseException(String.format("Error getting account by id %s", from)));
+        if (fromAccount.getSum() - amount < 0) throw new DatabaseException("Insufficient funds on sender account");
 
-        LOGGER.info("ALL ACCOUNTS ARE: {}", JsonUtils.silentToJsonString(accountsList));
+        fromAccount.setSum(fromAccount.getSum() - amount);
+        toAccount.setSum(toAccount.getSum() + amount);
+        accountsRepository.save(fromAccount);
+        accountsRepository.save(toAccount);
     }
 
-    public TransferResponse transfer(TransferRequest transferRequest) {
-        return null;
-    }
 }
