@@ -13,7 +13,7 @@ public class TestUtils {
     private static final List<String> NAMES = Arrays.asList("Peter", "Mike", "Stan", "Bob", "Mark");
 
     public static Account createRandomAccount(Integer maxMoney) {
-        return new Account(null, NAMES.get(RANDOM.nextInt(NAMES.size())), (double) RANDOM.nextInt(maxMoney));
+        return new Account(null, NAMES.get(RANDOM.nextInt(NAMES.size())), RANDOM.nextInt(maxMoney));
     }
 
 }

@@ -24,6 +24,9 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>com.svintsov.accounts.App</mainClass>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.jsonschema2pojo</groupId>

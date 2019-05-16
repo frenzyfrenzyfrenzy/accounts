@@ -6,7 +6,6 @@ import com.svintsov.accounts.model.GeneralResponse;
 import com.svintsov.accounts.model.TransferRequest;
 import com.svintsov.accounts.service.AccountsRepository;
 import com.svintsov.accounts.service.TransferService;
-import com.svintsov.accounts.utils.DatabaseException;
 import com.svintsov.accounts.utils.JsonUtils;
 import com.svintsov.accounts.validator.Validator;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -12,7 +12,7 @@
       "type": "integer"
     },
     "amount": {
-      "type": "number"
+      "type": "integer"
     }
   },
   "required": [

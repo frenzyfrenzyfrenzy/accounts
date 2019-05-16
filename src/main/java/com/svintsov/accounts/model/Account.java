@@ -12,12 +12,12 @@ public class Account {
 
     private String name;
 
-    private Double sum;
+    private Integer sum;
 
     public Account() {
     }
 
-    public Account(Integer id, String name, Double sum) {
+    public Account(Integer id, String name, Integer sum) {
         this.id = id;
         this.name = name;
         this.sum = sum;
@@ -39,11 +39,11 @@ public class Account {
         this.name = name;
     }
 
-    public Double getSum() {
+    public Integer getSum() {
         return sum;
     }
 
-    public void setSum(Double sum) {
+    public void setSum(Integer sum) {
         this.sum = sum;
     }
 }
